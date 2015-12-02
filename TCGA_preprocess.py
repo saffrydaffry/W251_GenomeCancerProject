@@ -2,7 +2,6 @@
 
 import pandas as pd
 import numpy as np
-#from pandas import DataFrame
 
 input_maf = "Practice_Files/genome.wustl.edu_BRCA.IlluminaGA_DNASeq.Level_2.5.3.0.somatic.maf"
 
@@ -30,6 +29,7 @@ maf_gb_df.rename(columns = {0:'Count'}, inplace = True)
 
 # Cast the table into a sparse matrix
 pivoted = maf_gb_df.pivot(index = 'Tumor_Sample_Barcode', columns ='Hugo_Symbol', values = 'Count')
+pivoted['label'] = ['BRCA']*pivoted.shape[0]
 
 # Print out the sparse matrix
 # Convert NaNs to 0s
