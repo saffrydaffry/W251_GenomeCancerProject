@@ -47,7 +47,7 @@ g = Genome('hg38')
 # columns of interest 'chrom' (chrX, %s), 'txStart' (number, %s), 'txEnd' (number , %s)
 print "Extracting reference genome table (HG38) from UCSC Genome Browser"
 df = g.dataframe('refGene')
-
+df[['txStart', 'txEnd']] = df[['txStart', 'txEnd']].astype(int)
 
 genes = pd.Series(np.zeros(vcf_ex_sub.shape[0]))
 #gene = hg19.bin_query('refGene', vcf_ex_sub.CHROM[1], vcf_ex_sub.POS[1], vcf_ex_sub.POS[1])
@@ -56,7 +56,18 @@ genes = pd.Series(np.zeros(vcf_ex_sub.shape[0]))
 
 for i in range(0, vcf_ex_sub.shape[0]):
      #genes[i] = df[[df.chrom == str(vcf_ex_sub.CHROM.iloc[i]) and df.txStart >= str(vcf_ex_sub.POS.iloc[i])]].bool() #and df.txStart >= str(vcf_ex_sub.POS.iloc[i]) and df.txEnd <= vcf_ex_sub.POS.iloc[i]].bool(),
-    print df.name2[(df.chrom == vcf_ex_sub.CHROM.iloc[i]) & (df.txStart >= vcf_ex_sub.POS.iloc[i]) & (df.txEnd <= vcf_ex_sub.POS.iloc[i])]
+    chrom = vcf_ex_sub['CHROM'].iloc[i]
+    location = vcf_ex_sub['POS'].iloc[i]
+    #print i, chrom, location
+    tmp = df.copy()
+    tmp = tmp[tmp.chrom == chrom]
+    tmp = tmp[tmp['txStart'] <= location]
+    tmp = tmp[tmp['txEnd'] >= location]
+    if tmp.empty:
+        geneName = '0'
+    else :
+        geneName = tmp['name2'].iloc[0]
+    print geneName
 #vcf_ex_sub['Hugo_Symbol'] = genes
 
 #hg19.bin_query('refGene', vcf_ex_sub.CHROM, vcf_ex_sub.POS, vcf_ex_sub.POS)
