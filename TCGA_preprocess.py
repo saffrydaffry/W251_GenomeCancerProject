@@ -2,7 +2,13 @@
 
 import pandas as pd
 import numpy as np
+import os
 
+# insert path to parent directory
+path = '/root/tcga'
+# this will print the part of the directory name after the _
+for name in os.listdir(path):
+    print name.split('_')[1]
 input_maf = "Practice_Files/genome.wustl.edu_BRCA.IlluminaGA_DNASeq.Level_2.5.3.0.somatic.maf"
 
 maf_ex = pd.read_csv(input_maf, sep = r'\t', engine = 'python', skiprows = 1)
