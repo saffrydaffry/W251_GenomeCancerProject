@@ -5,13 +5,17 @@ import numpy as np
 import os
 
 # insert path to parent directory
-path = '/root/tcga'
+path = '/home/sgreene/Dev/github/W251_GenomeCancerProject/Practice_Files/tcga'
 # this will print the part of the directory name after the _
 for name in os.listdir(path):
     print name.split('_')[1]
-input_maf = "Practice_Files/genome.wustl.edu_BRCA.IlluminaGA_DNASeq.Level_2.5.3.0.somatic.maf"
+    path2 = path + "/" + name
+    for filename in os.listdir(path2):
+        print filename
 
-maf_ex = pd.read_csv(input_maf, sep = r'\t', engine = 'python', skiprows = 1)
+#read input file and parse
+input_maf = "Practice_Files/tcga/Data_BRCA/test1.maf"
+maf_ex = pd.read_csv(input_maf, sep = '\t', engine = 'python', skiprows = 1)
 maf_ex = pd.DataFrame(maf_ex)
 
 # get column names
