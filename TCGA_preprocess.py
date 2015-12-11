@@ -31,13 +31,28 @@ maf_gb_df = pd.DataFrame(maf_gb.size().reset_index())
 
 # Grouping counts by tumor sample and gene
 maf_gb_df.rename(columns = {0:'Count'}, inplace = True)
-    #print maf_gb_df.shape, maf_gb_df.columns.values
+maf_gb_df.columns = ['Idx', 'Gene', 'Count']
 
-# Cast the table into a sparse matrix
-pivoted = maf_gb_df.pivot(index = 'Tumor_Sample_Barcode', columns ='Hugo_Symbol', values = 'Count')
-pivoted['label'] = ['BRCA']*pivoted.shape[0]
+#print maf_gb_df.shape, maf_gb_df.columns
+
+# Cast the table into a sparse matrix insert column for label and sample
+pivoted = maf_gb_df.pivot(index = 'Idx', columns ='Gene', values = 'Count')
+pivoted.insert(4,'Label','BRCA',allow_duplicates='TRUE')
+pivoted.insert(0,'Sample',pivoted.index)
 
 # Print out the sparse matrix
 # Convert NaNs to 0s
 outfile = "processed_MAF.csv"
 pivoted.fillna(0).to_csv(outfile)
+
+#read input from 1000 genomes file
+tgfilename = "/home/sgreene/Dev/github/W251_GenomeCancerProject/Practice_Files/vcf_1sample_cast.csv"
+tgfile = pd.read_csv(tgfilename, sep = ',', engine = 'python', header = 0)
+#print tgfile.shape
+
+#add TCGA data to 1000genome data. If gene columns don't exist then create them
+result = tgfile.append(pivoted)
+#print result.shape
+#print result
+
+
